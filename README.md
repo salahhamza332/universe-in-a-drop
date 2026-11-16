@@ -4,16 +4,17 @@
 [![rank](https://make.fun/badge/ai-excited-01/salahhamza332/universe-in-a-drop/rank.svg)](https://make.fun/bounty/ai-excited-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 [![reward](https://make.fun/badge/ai-excited-01/salahhamza332/universe-in-a-drop/reward.svg)](https://make.fun/bounty/ai-excited-01?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 
-**THE UNIVERSE INSIDE A DROP** — one perfect crystal droplet adrift in deep
-space, and inside it: a two-armed grand-design spiral galaxy with a tight
-quasar-bright heart, vivid magenta and teal nebulae, ringed planets, and a
-crescent world whose tiny amber city lights glitter along the limb. Absurd
-scale, single readable silhouette. Everything here is drawn procedurally — no
-image assets, no network — by a hand-rolled Node.js renderer: fbm value-noise
-nebulae, ~36k additive particles plus a smooth ridge stroke tracing the log
-spiral (gold near the core fading to cyan-white at the tips),
-spherical-lens refraction with chromatic aberration, a fresnel rim, and
-placed speculars.
+**THE UNIVERSE INSIDE A DROP** — a single crystal droplet adrift in deep
+space, and an entire cosmos held behind its curved glass: a two-armed
+grand-design spiral with a quasar-bright nucleus, magenta and teal
+star-forming nebulae, four tiny shaded planets, and a crescent world whose
+amber city lights glitter along the limb beneath thin cyan beacon beams.
+Absurd scale, one readable silhouette. No image assets and no network calls —
+every pixel comes from a hand-rolled, deterministic Node.js renderer: fbm
+value-noise nebulae, tens of thousands of additive particles plus a smooth
+ridge stroke tracing the logarithmic spiral (gold at the core, fading to
+cyan-white at the tips), spherical-lens refraction with chromatic
+aberration, a fresnel rim, and placed speculars.
 
 ## Run it
 
@@ -22,7 +23,7 @@ mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
 That copies the committed `entry.png` to `out/entry.png`, so every run is
-byte-identical. To rebuild the artwork itself from source:
+byte-for-byte identical. To rebuild the artwork from source instead:
 
 ```sh
 MAKEFUN_OUTPUT_DIR=out node render.mjs

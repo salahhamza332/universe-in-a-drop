@@ -68,16 +68,16 @@ for (let y = 0; y < H; y++) {
     // radial-ish gradient: deep indigo center-top -> near black edges, teal bottom-left hint
     const dx = nx - 0.5, dy = ny - 0.44;
     const d = Math.sqrt(dx * dx + dy * dy);
-    let r = 10 + 14 * (1 - d), g = 8 + 10 * (1 - d), b = 24 + 26 * (1 - d);
+    let r = 7 + 12 * (1 - d), g = 6 + 8 * (1 - d), b = 19 + 22 * (1 - d);
     // large-scale nebula wash
     const n1 = fbm(nx * 3.1 + 11.7, ny * 3.1 + 5.2, 5);
     const n2 = fbm(nx * 6.5 + 40.2, ny * 6.5 + 23.9, 4);
     const n3 = fbm(nx * 2.2 + 71.3, ny * 2.2 + 91.1, 4);
     // magenta cloud upper-right
-    const mMask = Math.max(0, n1 - 0.48) * 2.2 * Math.exp(-((nx - 0.78) ** 2 + (ny - 0.22) ** 2) * 6);
+    const mMask = Math.max(0, n1 - 0.46) * 2.6 * Math.exp(-((nx - 0.78) ** 2 + (ny - 0.22) ** 2) * 6);
     r += mMask * 120; g += mMask * 22; b += mMask * 105;
     // teal cloud lower-left
-    const tMask = Math.max(0, n2 - 0.47) * 2.2 * Math.exp(-((nx - 0.16) ** 2 + (ny - 0.78) ** 2) * 6.5);
+    const tMask = Math.max(0, n2 - 0.45) * 2.6 * Math.exp(-((nx - 0.16) ** 2 + (ny - 0.78) ** 2) * 6.5);
     r += tMask * 8; g += tMask * 95; b += tMask * 105;
     // faint amber wisp center-left
     const aMask = Math.max(0, n3 - 0.5) * 2.0 * Math.exp(-((nx - 0.28) ** 2 + (ny - 0.34) ** 2) * 9);
@@ -215,9 +215,9 @@ const ARMS = 2, ARM_PARTICLES = 36000;
 for (let i = 0; i < ARM_PARTICLES; i++) {
   const arm = i % ARMS;
   const t = Math.pow(armRand(), 0.75);           // 0 core .. 1 edge
-  const theta = arm * Math.PI + t * 3.8 + (armRand() - 0.5) * (0.26 - t * 0.14);
-  const rad = 10 + t * 165;
-  const spread = 3.5 + t * 15;
+  const theta = arm * Math.PI + t * 4.35 + (armRand() - 0.5) * (0.20 - t * 0.11);
+  const rad = 10 + t * 168;
+  const spread = 2.6 + t * 12.5;
   const lx = Math.cos(theta) * rad + (armRand() - 0.5) * spread;
   const ly = Math.sin(theta) * rad * GAL_SQUASH + (armRand() - 0.5) * spread * GAL_SQUASH;
   const wx = GAL_CX + lx * GCA - ly * GSA;
@@ -239,13 +239,13 @@ for (let i = 0; i < ARM_PARTICLES; i++) {
 for (let arm = 0; arm < 2; arm++) {
   for (let step = 0; step <= 560; step++) {
     const t = step / 560;
-    const theta = arm * Math.PI + t * 3.8;
-    const rad = 10 + t * 165;
+    const theta = arm * Math.PI + t * 4.35;
+    const rad = 10 + t * 168;
     const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
     const wx = GAL_CX + lx * GCA - ly * GSA;
     const wy = GAL_CY + lx * GSA + ly * GCA;
-    const thick = 8 - t * 4.2;
-    const amp = (1 - t * 0.62) * 0.72;
+    const thick = 6.4 - t * 3.6;
+    const amp = (1 - t * 0.55) * 1.12;
     // gold -> white -> cyan interpolation
     let cr, cg, cb;
     if (t < 0.35) { const u = t / 0.35; cr = 255; cg = 188 + 42 * u; cb = 75 + 145 * u; }
@@ -282,7 +282,7 @@ for (let i = 0; i < 520; i++) {
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const dx = x - GAL_CX, dy = y - GAL_CY;
   const d = Math.hypot(dx, dy);
-  const q = Math.exp(-d * d / (2 * 5.6 * 5.6)) * 235 + Math.exp(-d * d / (2 * 20 * 20)) * 95 + Math.exp(-d * d / (2 * 70 * 70)) * 34;
+  const q = Math.exp(-d * d / (2 * 4.6 * 4.6)) * 215 + Math.exp(-d * d / (2 * 17 * 17)) * 88 + Math.exp(-d * d / (2 * 64 * 64)) * 32;
   iAdd(x, y, q, q * 0.94, q * 0.78);
   // cross flare
   const fx = Math.exp(-dy * dy / (2 * 1.4 * 1.4)) * Math.exp(-Math.abs(dx) / 52) * 105;
