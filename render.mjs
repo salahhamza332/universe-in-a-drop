@@ -184,7 +184,7 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
     if (dd > 1.6) continue;
     const n = fbm(nx * 5.5 + p.cx * 40, ny * 5.5 + p.cy * 40, 4);
     const fall = Math.exp(-dd * dd * 2.4);
-    const m = Math.max(0, n - 0.27) * 2.5 * fall * p.amp;
+    const m = Math.max(0, n - 0.30) * 3.1 * fall * p.amp;
     r += p.r * m; g += p.g * m; b += p.b * m;
   }
   iAdd(x, y, r, g, b);
@@ -207,49 +207,49 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const mid = Math.exp(-d * d / (2 * 53 * 53));
   const edge = Math.exp(-Math.pow(d - 24, 2) / (2 * 7 * 7)); // orange-gold rim at core edge
   iAdd(x, y, 235 * edge, 130 * edge, 35 * edge);
-  iAdd(x, y, 255 * core + 255 * mid * 0.55, 250 * core + 190 * mid * 0.5, 235 * core + 120 * mid * 0.35);
+  iAdd(x, y, 255 * core + 210 * mid * 0.36, 250 * core + 155 * mid * 0.34, 235 * core + 100 * mid * 0.28);
 }
 // spiral arms: additive particles along log spiral
 const armRand = mulberry32(4242);
-const ARMS = 2, ARM_PARTICLES = 23000;
+const ARMS = 2, ARM_PARTICLES = 36000;
 for (let i = 0; i < ARM_PARTICLES; i++) {
   const arm = i % ARMS;
   const t = Math.pow(armRand(), 0.75);           // 0 core .. 1 edge
-  const theta = arm * Math.PI + t * 5.0 + (armRand() - 0.5) * (0.30 - t * 0.16);
-  const rad = 12 + t * 158;
-  const spread = 4 + t * 19;
+  const theta = arm * Math.PI + t * 3.8 + (armRand() - 0.5) * (0.26 - t * 0.14);
+  const rad = 10 + t * 165;
+  const spread = 3.5 + t * 15;
   const lx = Math.cos(theta) * rad + (armRand() - 0.5) * spread;
   const ly = Math.sin(theta) * rad * GAL_SQUASH + (armRand() - 0.5) * spread * GAL_SQUASH;
   const wx = GAL_CX + lx * GCA - ly * GSA;
   const wy = GAL_CY + lx * GSA + ly * GCA;
   const xi = wx | 0, yi = wy | 0;
   if (xi < 0 || yi < 0 || xi >= IW || yi >= IH) continue;
-  const bright = Math.pow(1 - t, 1.35) * (0.65 + armRand() * 0.85);
+  const bright = Math.pow(1 - t, 1.25) * (0.75 + armRand() * 0.95);
   // color: near core warm gold -> mid white -> tips cyan-blue
   let cr, cg, cb;
-  if (t < 0.35) { cr = 255; cg = 225 - t * 120; cb = 170 - t * 220; }
-  else if (t < 0.75) { cr = 235; cg = 240; cb = 250; }
-  else { cr = 130 + (1 - t) * 90; cg = 205; cb = 255; }
-  const b = bright * (0.55 + armRand() * 0.6);
-  iAdd(xi, yi, cr * b * 0.16, cg * b * 0.16, cb * b * 0.16);
+  if (t < 0.32) { const u = t / 0.32; cr = 255; cg = 190 - 55 * u; cb = 85 - 20 * u; }
+  else if (t < 0.72) { const u = (t - 0.32) / 0.40; cr = 255 - 45 * u; cg = 215 + 30 * u; cb = 150 + 95 * u; }
+  else { const u = (t - 0.72) / 0.28; cr = 150 - 60 * u; cg = 225 + 25 * u; cb = 255; }
+  const b = bright * (0.6 + armRand() * 0.65);
+  iAdd(xi, yi, cr * b * 0.22, cg * b * 0.22, cb * b * 0.22);
   // slight glow for some
-  if (armRand() < 0.1) iAdd(xi, yi, cr * b * 0.18, cg * b * 0.18, cb * b * 0.18);
+  if (armRand() < 0.14) iAdd(xi, yi, cr * b * 0.24, cg * b * 0.24, cb * b * 0.24);
 }
 // grand-design arm ridge (smooth additive stroke along both arms)
 for (let arm = 0; arm < 2; arm++) {
   for (let step = 0; step <= 560; step++) {
     const t = step / 560;
-    const theta = arm * Math.PI + t * 5.0;
-    const rad = 12 + t * 158;
+    const theta = arm * Math.PI + t * 3.8;
+    const rad = 10 + t * 165;
     const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
     const wx = GAL_CX + lx * GCA - ly * GSA;
     const wy = GAL_CY + lx * GSA + ly * GCA;
-    const thick = 9 - t * 4.5;
-    const amp = (1 - t * 0.72) * 0.5;
+    const thick = 8 - t * 4.2;
+    const amp = (1 - t * 0.62) * 0.72;
     // gold -> white -> cyan interpolation
     let cr, cg, cb;
-    if (t < 0.4) { const u = t / 0.4; cr = 255; cg = 215 + 25 * u; cb = 120 + 115 * u; }
-    else { const u = (t - 0.4) / 0.6; cr = 255 - 105 * u; cg = 240 + 10 * u; cb = 235 + 20 * u; }
+    if (t < 0.35) { const u = t / 0.35; cr = 255; cg = 188 + 42 * u; cb = 75 + 145 * u; }
+    else { const u = (t - 0.35) / 0.65; cr = 255 - 115 * u; cg = 238 + 12 * u; cb = 235 + 20 * u; }
     const R = Math.ceil(thick * 2);
     for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
       const d2 = dx * dx + dy * dy;
@@ -282,11 +282,11 @@ for (let i = 0; i < 520; i++) {
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const dx = x - GAL_CX, dy = y - GAL_CY;
   const d = Math.hypot(dx, dy);
-  const q = Math.exp(-d * d / (2 * 7.6 * 7.6)) * 255 + Math.exp(-d * d / (2 * 26 * 26)) * 120 + Math.exp(-d * d / (2 * 80 * 80)) * 42;
+  const q = Math.exp(-d * d / (2 * 5.6 * 5.6)) * 235 + Math.exp(-d * d / (2 * 20 * 20)) * 95 + Math.exp(-d * d / (2 * 70 * 70)) * 34;
   iAdd(x, y, q, q * 0.94, q * 0.78);
   // cross flare
-  const fx = Math.exp(-dy * dy / (2 * 1.6 * 1.6)) * Math.exp(-Math.abs(dx) / 60) * 130;
-  const fy = Math.exp(-dx * dx / (2 * 1.6 * 1.6)) * Math.exp(-Math.abs(dy) / 60) * 130;
+  const fx = Math.exp(-dy * dy / (2 * 1.4 * 1.4)) * Math.exp(-Math.abs(dx) / 52) * 105;
+  const fy = Math.exp(-dx * dx / (2 * 1.4 * 1.4)) * Math.exp(-Math.abs(dy) / 52) * 105;
   iAdd(x, y, fx + fy, (fx + fy) * 0.95, (fx + fy) * 0.85);
 }
 

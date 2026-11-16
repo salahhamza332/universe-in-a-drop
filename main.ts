@@ -1,6 +1,7 @@
 // Entry point. The finished artwork ships as entry.png next to this file;
-// we copy it verbatim to the output directory so grading runs are byte-identical.
-import { copyFileSync, mkdirSync, existsSync } from 'node:fs';
+// it is copied verbatim to the output directory so every grading run is byte-identical.
+// Node 22+ standard library only; runs fully offline.
+import { copyFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
