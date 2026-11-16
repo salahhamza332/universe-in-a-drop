@@ -126,7 +126,7 @@ for (let i = 0; i < starN; i++) {
   for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
     const d2 = dx * dx + dy * dy;
     const v = Math.exp(-d2 / (s * s)) * b;
-    addPx(x + dx, y + dy, cr * v / b * 1.0, cg * v / b * 1.0, cb * v / b * 1.0);
+    addPx(Math.round(x + dx), Math.round(y + dy), cr * v / b * 1.0, cg * v / b * 1.0, cb * v / b * 1.0);
   }
 }
 // ~26 bright stars with diffraction spikes
@@ -138,15 +138,15 @@ for (let i = 0; i < 26; i++) {
   const R = 2;
   for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
     const v = Math.exp(-(dx * dx + dy * dy) / 1.8) * b;
-    addPx(x + dx, y + dy, cr * v / b, cg * v / b, cb * v / b);
+    addPx(Math.round(x + dx), Math.round(y + dy), cr * v / b, cg * v / b, cb * v / b);
   }
   const spikeLen = 14 + rand() * 22;
   for (let t = 1; t < spikeLen; t++) {
     const fall = Math.pow(1 - t / spikeLen, 2.2) * b * 0.55;
-    addPx(x + t, y, cr * fall / b, cg * fall / b, cb * fall / b);
-    addPx(x - t, y, cr * fall / b, cg * fall / b, cb * fall / b);
-    addPx(x, y + t, cr * fall / b, cg * fall / b, cb * fall / b);
-    addPx(x, y - t, cr * fall / b, cg * fall / b, cb * fall / b);
+    addPx(Math.round(x + t), Math.round(y), cr * fall / b, cg * fall / b, cb * fall / b);
+    addPx(Math.round(x - t), Math.round(y), cr * fall / b, cg * fall / b, cb * fall / b);
+    addPx(Math.round(x), Math.round(y + t), cr * fall / b, cg * fall / b, cb * fall / b);
+    addPx(Math.round(x), Math.round(y - t), cr * fall / b, cg * fall / b, cb * fall / b);
   }
 }
 
@@ -215,7 +215,7 @@ const ARMS = 2, ARM_PARTICLES = 52000;
 for (let i = 0; i < ARM_PARTICLES; i++) {
   const arm = i % ARMS;
   const t = Math.pow(armRand(), 0.75);           // 0 core .. 1 edge
-  const theta = arm * Math.PI + t * 5.45 + (armRand() - 0.5) * (0.22 - t * 0.12);
+  const theta = arm * Math.PI + t * 3.9 + (armRand() - 0.5) * (0.26 - t * 0.12);
   const rad = 10 + t * 178;
   const spread = 2.2 + t * 8.5;
   const lx = Math.cos(theta) * rad + (armRand() - 0.5) * spread;
@@ -239,13 +239,13 @@ for (let i = 0; i < ARM_PARTICLES; i++) {
 for (let arm = 0; arm < 2; arm++) {
   for (let step = 0; step <= 560; step++) {
     const t = step / 560;
-    const theta = arm * Math.PI + t * 5.45;
+    const theta = arm * Math.PI + t * 3.9;
     const rad = 10 + t * 178;
     const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
     const wx = GAL_CX + lx * GCA - ly * GSA;
     const wy = GAL_CY + lx * GSA + ly * GCA;
-    const thick = 8.6 - t * 4.6;
-    const amp = (1 - t * 0.45) * 1.25;
+    const thick = 5.6 - t * 3.2;
+    const amp = (1 - t * 0.45) * 0.55;
     // gold -> white -> cyan interpolation
     let cr, cg, cb;
     if (t < 0.35) { const u = t / 0.35; cr = 255; cg = 188 + 42 * u; cb = 75 + 145 * u; }
@@ -255,16 +255,16 @@ for (let arm = 0; arm < 2; arm++) {
       const d2 = dx * dx + dy * dy;
       if (d2 > R * R) continue;
       const v = Math.exp(-d2 / (thick * thick)) * amp;
-      iAdd(wx + dx, wy + dy, cr * v, cg * v, cb * v);
+      iAdd(Math.round(wx + dx), Math.round(wy + dy), cr * v, cg * v, cb * v);
     }
   }
 }
 // star-forming knots along the arms: bright magenta/cyan clumps (HII regions)
 const knotRand = mulberry32(90210);
 for (let arm = 0; arm < 2; arm++) {
-  for (let k = 0; k < 46; k++) {
+  for (let k = 0; k < 64; k++) {
     const t = 0.22 + Math.pow(knotRand(), 0.8) * 0.74;
-    const theta = arm * Math.PI + t * 5.45 + (knotRand() - 0.5) * 0.14;
+    const theta = arm * Math.PI + t * 3.9 + (knotRand() - 0.5) * 0.14;
     const rad = 10 + t * 178;
     const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
     const wx = GAL_CX + lx * GCA - ly * GSA;
@@ -277,7 +277,7 @@ for (let arm = 0; arm < 2; arm++) {
     for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
       const d2 = dx * dx + dy * dy;
       const v = Math.exp(-d2 / (2 * size * size)) * amp;
-      iAdd(wx + dx, wy + dy, kr * v * 0.55, kg * v * 0.55, kb * v * 0.55);
+      iAdd(Math.round(wx + dx), Math.round(wy + dy), kr * v * 0.7, kg * v * 0.7, kb * v * 0.7);
     }
   }
 }
@@ -304,7 +304,7 @@ for (let i = 0; i < 520; i++) {
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const dx = x - GAL_CX, dy = y - GAL_CY;
   const d = Math.hypot(dx, dy);
-  const q = Math.exp(-d * d / (2 * 4.6 * 4.6)) * 118 + Math.exp(-d * d / (2 * 17 * 17)) * 46 + Math.exp(-d * d / (2 * 64 * 64)) * 22;
+  const q = Math.exp(-d * d / (2 * 4.6 * 4.6)) * 88 + Math.exp(-d * d / (2 * 17 * 17)) * 38 + Math.exp(-d * d / (2 * 64 * 64)) * 18;
   iAdd(x, y, q, q * 0.93, q * 0.76);
   // cross flare
   const fx = Math.exp(-dy * dy / (2 * 1.4 * 1.4)) * Math.exp(-Math.abs(dx) / 52) * 78;
@@ -385,11 +385,11 @@ for (const [rel, len] of beams) {
   const topY = CY - dyTop;
   for (let t = 0; t < len; t++) {
     const y = topY - t;
-    const fall = Math.pow(1 - t / len, 1.8) * 0.8;
+    const fall = Math.pow(1 - t / len, 1.8) * 0.5;
     const wob = Math.sin(t * 0.08) * 1.2;
-    iAdd(bx + wob, y, 200 * fall, 255 * fall, 255 * fall);
-    iAdd(bx + wob + 1, y, 150 * fall, 215 * fall, 250 * fall);
-    iAdd(bx + wob - 1, y, 120 * fall, 170 * fall, 220 * fall);
+    iAdd(Math.round(bx + wob), Math.round(y), 200 * fall, 255 * fall, 255 * fall);
+    iAdd(Math.round(bx + wob) + 1, Math.round(y), 150 * fall, 215 * fall, 250 * fall);
+    iAdd(Math.round(bx + wob) - 1, Math.round(y), 120 * fall, 170 * fall, 220 * fall);
   }
 }
 
