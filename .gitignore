@@ -1,8 +1,11 @@
-memory/
+# Build/output scratch
 out*/
 scratch/
+
+# Agent-local runtime files (not part of the artwork)
 AGENTS.md
 IDENTITY.md
 SOUL.md
 USER.md
 BOOTSTRAP.md
+memory/
