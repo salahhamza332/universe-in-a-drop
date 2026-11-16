@@ -171,8 +171,8 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
 }
 // interior nebula puffs (fbm, colored)
 const puffs = [
-  { cx: 0.30, cy: 0.36, rad: 0.34, r: 150, g: 40, b: 160, amp: 0.75 },  // magenta-violet
-  { cx: 0.72, cy: 0.30, rad: 0.30, r: 20, g: 150, b: 170, amp: 0.7 },   // teal
+  { cx: 0.30, cy: 0.36, rad: 0.34, r: 175, g: 34, b: 185, amp: 0.95 },  // magenta-violet
+  { cx: 0.72, cy: 0.30, rad: 0.30, r: 16, g: 185, b: 200, amp: 0.9 },   // teal
   { cx: 0.62, cy: 0.74, rad: 0.30, r: 215, g: 130, b: 45, amp: 0.5 },   // amber
   { cx: 0.26, cy: 0.68, rad: 0.26, r: 60, g: 60, b: 190, amp: 0.5 },    // indigo
 ];
@@ -184,7 +184,7 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
     if (dd > 1.6) continue;
     const n = fbm(nx * 5.5 + p.cx * 40, ny * 5.5 + p.cy * 40, 4);
     const fall = Math.exp(-dd * dd * 2.4);
-    const m = Math.max(0, n - 0.32) * 2.0 * fall * p.amp;
+    const m = Math.max(0, n - 0.27) * 2.5 * fall * p.amp;
     r += p.r * m; g += p.g * m; b += p.b * m;
   }
   iAdd(x, y, r, g, b);
@@ -203,26 +203,28 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   // unrotate
   const lx = (dx * GCA + dy * GSA), ly = (-dx * GSA + dy * GCA) / GAL_SQUASH;
   const d = Math.hypot(lx, ly);
-  const core = Math.exp(-d * d / (2 * 26 * 26));
-  const mid = Math.exp(-d * d / (2 * 62 * 62));
+  const core = Math.exp(-d * d / (2 * 22 * 22));
+  const mid = Math.exp(-d * d / (2 * 53 * 53));
+  const edge = Math.exp(-Math.pow(d - 24, 2) / (2 * 7 * 7)); // orange-gold rim at core edge
+  iAdd(x, y, 235 * edge, 130 * edge, 35 * edge);
   iAdd(x, y, 255 * core + 255 * mid * 0.55, 250 * core + 190 * mid * 0.5, 235 * core + 120 * mid * 0.35);
 }
 // spiral arms: additive particles along log spiral
 const armRand = mulberry32(4242);
-const ARMS = 2, ARM_PARTICLES = 19000;
+const ARMS = 2, ARM_PARTICLES = 23000;
 for (let i = 0; i < ARM_PARTICLES; i++) {
   const arm = i % ARMS;
   const t = Math.pow(armRand(), 0.75);           // 0 core .. 1 edge
-  const theta = arm * Math.PI + t * 5.3 + (armRand() - 0.5) * (0.5 - t * 0.28);
+  const theta = arm * Math.PI + t * 5.0 + (armRand() - 0.5) * (0.30 - t * 0.16);
   const rad = 12 + t * 158;
-  const spread = 5 + t * 26;
+  const spread = 4 + t * 19;
   const lx = Math.cos(theta) * rad + (armRand() - 0.5) * spread;
   const ly = Math.sin(theta) * rad * GAL_SQUASH + (armRand() - 0.5) * spread * GAL_SQUASH;
   const wx = GAL_CX + lx * GCA - ly * GSA;
   const wy = GAL_CY + lx * GSA + ly * GCA;
   const xi = wx | 0, yi = wy | 0;
   if (xi < 0 || yi < 0 || xi >= IW || yi >= IH) continue;
-  const bright = Math.pow(1 - t, 1.6) * (0.5 + armRand() * 0.8);
+  const bright = Math.pow(1 - t, 1.35) * (0.65 + armRand() * 0.85);
   // color: near core warm gold -> mid white -> tips cyan-blue
   let cr, cg, cb;
   if (t < 0.35) { cr = 255; cg = 225 - t * 120; cb = 170 - t * 220; }
@@ -232,6 +234,30 @@ for (let i = 0; i < ARM_PARTICLES; i++) {
   iAdd(xi, yi, cr * b * 0.16, cg * b * 0.16, cb * b * 0.16);
   // slight glow for some
   if (armRand() < 0.1) iAdd(xi, yi, cr * b * 0.18, cg * b * 0.18, cb * b * 0.18);
+}
+// grand-design arm ridge (smooth additive stroke along both arms)
+for (let arm = 0; arm < 2; arm++) {
+  for (let step = 0; step <= 560; step++) {
+    const t = step / 560;
+    const theta = arm * Math.PI + t * 5.0;
+    const rad = 12 + t * 158;
+    const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
+    const wx = GAL_CX + lx * GCA - ly * GSA;
+    const wy = GAL_CY + lx * GSA + ly * GCA;
+    const thick = 9 - t * 4.5;
+    const amp = (1 - t * 0.72) * 0.5;
+    // gold -> white -> cyan interpolation
+    let cr, cg, cb;
+    if (t < 0.4) { const u = t / 0.4; cr = 255; cg = 215 + 25 * u; cb = 120 + 115 * u; }
+    else { const u = (t - 0.4) / 0.6; cr = 255 - 105 * u; cg = 240 + 10 * u; cb = 235 + 20 * u; }
+    const R = Math.ceil(thick * 2);
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const d2 = dx * dx + dy * dy;
+      if (d2 > R * R) continue;
+      const v = Math.exp(-d2 / (thick * thick)) * amp;
+      iAdd(wx + dx, wy + dy, cr * v, cg * v, cb * v);
+    }
+  }
 }
 // dark dust lane along one side of the major axis (multiply-ish via subtract)
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
@@ -256,7 +282,7 @@ for (let i = 0; i < 520; i++) {
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const dx = x - GAL_CX, dy = y - GAL_CY;
   const d = Math.hypot(dx, dy);
-  const q = Math.exp(-d * d / (2 * 9 * 9)) * 255 + Math.exp(-d * d / (2 * 30 * 30)) * 130 + Math.exp(-d * d / (2 * 80 * 80)) * 45;
+  const q = Math.exp(-d * d / (2 * 7.6 * 7.6)) * 255 + Math.exp(-d * d / (2 * 26 * 26)) * 120 + Math.exp(-d * d / (2 * 80 * 80)) * 42;
   iAdd(x, y, q, q * 0.94, q * 0.78);
   // cross flare
   const fx = Math.exp(-dy * dy / (2 * 1.6 * 1.6)) * Math.exp(-Math.abs(dx) / 60) * 130;
