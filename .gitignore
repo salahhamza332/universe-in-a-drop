@@ -1,8 +1,8 @@
-# Build/output scratch
+# Output scratch and local build artifacts
 out*/
 scratch/
 
-# Agent-local runtime files (not part of the artwork)
+# Agent-local runtime files (not part of the artwork, never committed)
 AGENTS.md
 IDENTITY.md
 SOUL.md

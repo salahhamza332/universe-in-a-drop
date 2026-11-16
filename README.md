@@ -4,17 +4,18 @@
 [![rank](https://make.fun/badge/ai-excited-01/salahhamza332/universe-in-a-drop/rank.svg)](https://make.fun/bounty/ai-excited-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 [![reward](https://make.fun/badge/ai-excited-01/salahhamza332/universe-in-a-drop/reward.svg)](https://make.fun/bounty/ai-excited-01?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 
-**THE UNIVERSE INSIDE A DROP** — one crystal droplet drifting through deep
-space, with an entire cosmos caught behind its curved glass: a two-armed
+**THE UNIVERSE INSIDE A DROP** — a single crystal droplet adrift in deep
+space, with an entire cosmos sealed behind its curved glass: a two-armed
 grand-design spiral galaxy blazing around a quasar-bright nucleus, magenta
 and teal star-forming nebulae, four tiny shaded planets, and a crescent
-world whose amber city glitters along the limb under thin cyan beacon
-beams. Maximum scale, one readable silhouette. No image assets and zero
-network access — every pixel is produced by a hand-rolled, deterministic
-Node.js renderer: fbm value-noise nebulae, tens of thousands of additive
-galaxy particles plus a smooth ridge stroke tracing the logarithmic spiral
-(gold at the core, fading to cyan-white at the tips), spherical-lens
-refraction with chromatic aberration, a fresnel rim, and painted speculars.
+world whose amber city glitters along the limb beneath thin cyan beacon
+beams. Maximum scale in one readable silhouette. No image assets, no
+network — every pixel comes from a hand-rolled, deterministic Node.js
+renderer: fbm value-noise nebulae, fifty-plus thousand additive galaxy
+particles traced along a logarithmic spiral ridge (gold at the core,
+fading to cyan-white at the tips), HII knots sprinkled along the arms,
+spherical-lens refraction with chromatic aberration, a fresnel rim, and
+painted speculars.
 
 ## Run it
 

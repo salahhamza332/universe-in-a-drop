@@ -211,13 +211,13 @@ for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
 }
 // spiral arms: additive particles along log spiral
 const armRand = mulberry32(4242);
-const ARMS = 2, ARM_PARTICLES = 36000;
+const ARMS = 2, ARM_PARTICLES = 52000;
 for (let i = 0; i < ARM_PARTICLES; i++) {
   const arm = i % ARMS;
   const t = Math.pow(armRand(), 0.75);           // 0 core .. 1 edge
-  const theta = arm * Math.PI + t * 4.35 + (armRand() - 0.5) * (0.20 - t * 0.11);
-  const rad = 10 + t * 168;
-  const spread = 2.6 + t * 12.5;
+  const theta = arm * Math.PI + t * 5.45 + (armRand() - 0.5) * (0.22 - t * 0.12);
+  const rad = 10 + t * 178;
+  const spread = 2.2 + t * 8.5;
   const lx = Math.cos(theta) * rad + (armRand() - 0.5) * spread;
   const ly = Math.sin(theta) * rad * GAL_SQUASH + (armRand() - 0.5) * spread * GAL_SQUASH;
   const wx = GAL_CX + lx * GCA - ly * GSA;
@@ -231,7 +231,7 @@ for (let i = 0; i < ARM_PARTICLES; i++) {
   else if (t < 0.72) { const u = (t - 0.32) / 0.40; cr = 255 - 45 * u; cg = 215 + 30 * u; cb = 150 + 95 * u; }
   else { const u = (t - 0.72) / 0.28; cr = 150 - 60 * u; cg = 225 + 25 * u; cb = 255; }
   const b = bright * (0.6 + armRand() * 0.65);
-  iAdd(xi, yi, cr * b * 0.27, cg * b * 0.27, cb * b * 0.27);
+  iAdd(xi, yi, cr * b * 0.31, cg * b * 0.31, cb * b * 0.31);
   // slight glow for some
   if (armRand() < 0.14) iAdd(xi, yi, cr * b * 0.24, cg * b * 0.24, cb * b * 0.24);
 }
@@ -239,13 +239,13 @@ for (let i = 0; i < ARM_PARTICLES; i++) {
 for (let arm = 0; arm < 2; arm++) {
   for (let step = 0; step <= 560; step++) {
     const t = step / 560;
-    const theta = arm * Math.PI + t * 4.35;
-    const rad = 10 + t * 168;
+    const theta = arm * Math.PI + t * 5.45;
+    const rad = 10 + t * 178;
     const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
     const wx = GAL_CX + lx * GCA - ly * GSA;
     const wy = GAL_CY + lx * GSA + ly * GCA;
-    const thick = 7.3 - t * 4.2;
-    const amp = (1 - t * 0.55) * 1.02;
+    const thick = 8.6 - t * 4.6;
+    const amp = (1 - t * 0.45) * 1.25;
     // gold -> white -> cyan interpolation
     let cr, cg, cb;
     if (t < 0.35) { const u = t / 0.35; cr = 255; cg = 188 + 42 * u; cb = 75 + 145 * u; }
@@ -256,6 +256,28 @@ for (let arm = 0; arm < 2; arm++) {
       if (d2 > R * R) continue;
       const v = Math.exp(-d2 / (thick * thick)) * amp;
       iAdd(wx + dx, wy + dy, cr * v, cg * v, cb * v);
+    }
+  }
+}
+// star-forming knots along the arms: bright magenta/cyan clumps (HII regions)
+const knotRand = mulberry32(90210);
+for (let arm = 0; arm < 2; arm++) {
+  for (let k = 0; k < 46; k++) {
+    const t = 0.22 + Math.pow(knotRand(), 0.8) * 0.74;
+    const theta = arm * Math.PI + t * 5.45 + (knotRand() - 0.5) * 0.14;
+    const rad = 10 + t * 178;
+    const lx = Math.cos(theta) * rad, ly = Math.sin(theta) * rad * GAL_SQUASH;
+    const wx = GAL_CX + lx * GCA - ly * GSA;
+    const wy = GAL_CY + lx * GSA + ly * GCA;
+    const magenta = knotRand() < 0.55;
+    const amp = (0.7 + knotRand() * 1.1) * (1 - t * 0.30);
+    const kr = magenta ? 255 : 120, kg = magenta ? 90 : 235, kb = magenta ? 200 : 255;
+    const size = 1.5 + knotRand() * 3.2;
+    const R = Math.ceil(size * 3);
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const d2 = dx * dx + dy * dy;
+      const v = Math.exp(-d2 / (2 * size * size)) * amp;
+      iAdd(wx + dx, wy + dy, kr * v * 0.55, kg * v * 0.55, kb * v * 0.55);
     }
   }
 }
@@ -282,7 +304,7 @@ for (let i = 0; i < 520; i++) {
 for (let y = 0; y < IH; y++) for (let x = 0; x < IW; x++) {
   const dx = x - GAL_CX, dy = y - GAL_CY;
   const d = Math.hypot(dx, dy);
-  const q = Math.exp(-d * d / (2 * 4.6 * 4.6)) * 148 + Math.exp(-d * d / (2 * 17 * 17)) * 58 + Math.exp(-d * d / (2 * 64 * 64)) * 26;
+  const q = Math.exp(-d * d / (2 * 4.6 * 4.6)) * 118 + Math.exp(-d * d / (2 * 17 * 17)) * 46 + Math.exp(-d * d / (2 * 64 * 64)) * 22;
   iAdd(x, y, q, q * 0.93, q * 0.76);
   // cross flare
   const fx = Math.exp(-dy * dy / (2 * 1.4 * 1.4)) * Math.exp(-Math.abs(dx) / 52) * 78;
